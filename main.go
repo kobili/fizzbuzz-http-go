@@ -1,6 +1,7 @@
 package main
 
 import (
+	"encoding/json"
 	"fmt"
 	"log"
 	"net/http"
@@ -15,7 +16,6 @@ func fizzBuzzHandler(w http.ResponseWriter, r *http.Request) {
 	queryparams := r.URL.Query()
 
 	n := queryparams.Get("n")
-	// fmt.Fprintf(w, "echo... %s", n)
 
 	number, err := strconv.Atoi(n)
 	if err != nil {
@@ -24,15 +24,19 @@ func fizzBuzzHandler(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
+	var value string
+
 	if number%3 == 0 && number%5 == 0 {
-		fmt.Fprintf(w, "%s", "FizzBuzz")
+		value = "FizzBuzz"
 	} else if number%3 == 0 {
-		fmt.Fprintf(w, "%s", "Fizz")
+		value = "Fizz"
 	} else if number%5 == 0 {
-		fmt.Fprintf(w, "%s", "Buzz")
+		value = "Buzz"
 	} else {
-		fmt.Fprintf(w, "%s", n)
+		value = n
 	}
+
+	json.NewEncoder(w).Encode(map[string]string{"value": value})
 }
 
 func main() {
